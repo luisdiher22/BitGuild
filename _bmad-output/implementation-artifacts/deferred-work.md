@@ -22,3 +22,10 @@
 - **Pre-existing: `auth.ts` has `providers: []`** — Story 1.3 adds GitHub OAuth provider.
 - **Pre-existing: `redis.ts` missing `redis.on("error", ...)` handler** — process crash on ECONNREFUSED; add in a future ops/reliability story.
 - **Pre-existing: PostHog double-init in React 18 Strict Mode** — add `posthog.__loaded` guard; assign to Story 6.7 or a monitoring story.
+
+## Deferred from: code review of 1-3-github-oauth-authentication-and-account-creation (2026-05-01)
+
+- **`githubId` field never populated in `createUser`** — schema adds `User.githubId String? @unique` but `createBitGuildAdapter.createUser` only writes email/name/image/class; GitHub ID lives in the `Account` table via `linkAccount`. No active consumers yet; decide whether to denormalize via `linkAccount` override or drop the column in a future story.
+- **Soft-deleted users not checked in adapter** — `isDeleted Boolean @default(false)` is schema-only; neither the custom adapter nor base PrismaAdapter filters soft-deleted users on re-sign-in. A unique constraint error will surface if a soft-deleted user tries to re-register with the same email. Belongs to Story 6.6 (Account Deletion with Tenure Anonymization).
+- **`user.class` typed as `string | null` in `next-auth.d.ts`** — too permissive; any string passes through the session callback's `PRISMA_TO_TS_CLASS` lookup. Strict typing as `PrismaUserClass | null` creates cross-layer coupling. The `?? null` fallback handles unknown values gracefully for V1; revisit if runtime class validation becomes a security concern.
+- **No loading indicator during `hasPendingClass === null` hydration window** — button is disabled with no visual feedback until `useEffect` resolves sessionStorage. UX polish; acceptable SSR behavior for V1. Address in a future UI pass.

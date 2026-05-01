@@ -9,6 +9,23 @@ export enum UserClass {
   WANDERER          = "WANDERER",
 }
 
+// Maps TypeScript UPPER_SNAKE_CASE → Prisma PascalCase enum values
+export const TS_TO_PRISMA_CLASS: Record<UserClass, string> = {
+  [UserClass.BACKEND_WARRIOR]:   "BackendWarrior",
+  [UserClass.FRONTEND_MAGE]:     "FrontendMage",
+  [UserClass.DEVOPS_ENGINEER]:   "DevOpsEngineer",
+  [UserClass.FULLSTACK_ROGUE]:   "FullStackRogue",
+  [UserClass.ML_ALCHEMIST]:      "MLAlchemist",
+  [UserClass.SYSTEM_ARCHITECT]:  "SystemArchitect",
+  [UserClass.SECURITY_SENTINEL]: "SecuritySentinel",
+  [UserClass.WANDERER]:          "Wanderer",
+}
+
+// Maps Prisma PascalCase → TypeScript UPPER_SNAKE_CASE
+export const PRISMA_TO_TS_CLASS: Record<string, UserClass> = Object.fromEntries(
+  Object.entries(TS_TO_PRISMA_CLASS).map(([k, v]) => [v, k as UserClass])
+)
+
 export const CLASS_META: Record<
   UserClass,
   { label: string; description: string; sprite: string }

@@ -1,5 +1,10 @@
-import { redirect } from "next/navigation";
+import { redirect } from "next/navigation"
+import { getServerAuthSession } from "~/server/auth"
 
-export default function HomePage() {
-  redirect("/onboarding");
+export default async function HomePage() {
+  const session = await getServerAuthSession()
+  if (session?.user) {
+    redirect("/dashboard")
+  }
+  redirect("/onboarding")
 }

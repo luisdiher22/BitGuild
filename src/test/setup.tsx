@@ -5,7 +5,7 @@ import { vi } from "vitest";
 vi.mock("next/image", () => ({
   default: ({ src, alt, style, onError, width, height }: React.ImgHTMLAttributes<HTMLImageElement> & { onError?: () => void }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src as string} alt={alt} style={style} width={width} height={height} onError={onError} />
+    <img src={src} alt={alt} style={style} width={width} height={height} onError={onError} />
   ),
 }));
 
