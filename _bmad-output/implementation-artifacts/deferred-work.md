@@ -1,0 +1,24 @@
+# Deferred Work
+
+## Deferred from: code review of 1-1-t3-stack-scaffold-and-dark-forge-design-system (2026-05-01)
+
+- **Client-side Sentry not initialized** — `SentryProvider.tsx` was dead code (never imported). AC3 only requires server error capture. Properly add `sentry.client.config.ts` in Story 6.7 (security hardening story).
+- **CSP `unsafe-inline` in production script-src** — nonce-based CSP is the correct fix; requires Next.js middleware for per-request nonces. Assigned to Story 6.7.
+- **CI deploy `--detach` means Railway build failures invisible** — standard Railway async pattern. Add a post-deploy health-check polling step in a future ops/CI story.
+- **Sentry `beforeSend` does not strip request headers** — `Authorization`, `Cookie`, and other PII-carrying headers not redacted. Add header scrubbing in Story 6.7 alongside broader PII audit.
+- **Redis unconditional singleton: double module-eval race + serverless future** — benign on Railway long-running Node process. The globalThis pattern inherently has a TOCTOU window on concurrent cold starts; acceptable trade-off for V1. Revisit if moving to serverless.
+
+## Deferred from: code review of 1-2-class-selector-screen (2026-05-01)
+
+- **`(auth)` route group name implies an auth guard** — spec defines this structure; revisit naming/structure in Story 1.3 when the auth guard is actually added to the layout.
+- **`focused` init=0 causes a tabindex flash before `useEffect` restores sessionStorage** — low impact for V1; address if accessibility audit flags it. `ClassSelector.tsx:17`.
+- **`window.innerWidth` in `handleKeyDown` goes stale on window resize** — low impact with only 8 items in a fixed grid. `ClassSelector.tsx:38`.
+- **`onError` mock in test setup types handler as `() => void`** — any future `onError` handler reading `event.target` will get `undefined`. Fix when expanding image error handling. `src/test/setup.tsx`.
+- **Sprite paths are hardcoded strings with no build-time existence check** — AvatarSprite error fallback handles broken images gracefully for V1. `src/types/user.ts`.
+- **Empty `alt` prop produces blank AvatarSprite fallback** — out of scope for current callers; guard if component is reused with decorative images. `AvatarSprite.tsx:36`.
+- **AvatarSprite error state is permanent, no retry path** — low risk for local placeholder sprites; revisit when real CDN assets are introduced.
+- **`aria-multiselectable={false}` not declared on listbox** — ARIA default for listbox is single-select; add for explicitness in a future a11y pass. `ClassSelector.tsx`.
+- **`/` unconditional redirect ignores authenticated state** — explicitly deferred to Story 1.3 which adds the auth-aware redirect logic. `src/app/page.tsx`.
+- **Pre-existing: `auth.ts` has `providers: []`** — Story 1.3 adds GitHub OAuth provider.
+- **Pre-existing: `redis.ts` missing `redis.on("error", ...)` handler** — process crash on ECONNREFUSED; add in a future ops/reliability story.
+- **Pre-existing: PostHog double-init in React 18 Strict Mode** — add `posthog.__loaded` guard; assign to Story 6.7 or a monitoring story.

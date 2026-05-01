@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "WebSearch",
+      "Bash(npm --version)",
+      "Read(//c/Users/luisd/**)",
+      "Bash(npm create *)",
+      "PowerShell(npm create *)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\luisd\\\\demo1\"; $env:SKIP_ENV_VALIDATION = \"true\"; npx prisma generate 2>&1)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\luisd\\\\demo1\"; $env:SKIP_ENV_VALIDATION = \"true\"; npx tsc --noEmit 2>&1)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\luisd\\\\demo1\"; $env:SKIP_ENV_VALIDATION = \"true\"; npx eslint . --ext .ts,.tsx --max-warnings 0 2>&1 | Select-Object -Last 30)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\luisd\\\\demo1\"; $env:SKIP_ENV_VALIDATION = \"true\"; npx eslint . --ext .ts,.tsx --max-warnings 0 2>&1 | Select-Object -Last 20)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\luisd\\\\demo1\"; $env:SKIP_ENV_VALIDATION = \"true\"; npx next build 2>&1 | Select-Object -Last 30)",
+      "Bash(node -e \"const g = require\\('/c/Users/luisd/demo1/node_modules/geist/font/sans'\\); console.log\\(Object.keys\\(g.GeistSans\\)\\)\")",
+      "Bash(Remove-Item *)",
+      "Bash(SKIP_ENV_VALIDATION=true npx tsc --noEmit)",
+      "Bash(SKIP_ENV_VALIDATION=true npx eslint . --ext .ts,.tsx --max-warnings 0)",
+      "Bash(SKIP_ENV_VALIDATION=true npx prisma validate)",
+      "Bash(npx prisma *)",
+      "Bash(node scripts/create-placeholders.mjs)",
+      "Bash(npx tsc *)",
+      "Bash(npx shadcn@latest add button avatar --yes)",
+      "Bash(npx eslint *)",
+      "Bash(npm install *)",
+      "Bash(npm test *)",
+      "Bash(npm uninstall *)"
+    ]
+  }
+}

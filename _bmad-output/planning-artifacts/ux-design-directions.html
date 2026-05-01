@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitGuild — UX Design Directions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap');
+
+  :root {
+    --background:     #0d0f14;
+    --surface:        #151820;
+    --border:         #2a2d3a;
+    --primary:        #c8a862;
+    --secondary:      #4a9b8e;
+    --danger:         #8b3a3a;
+    --success:        #4a7c59;
+    --text-primary:   #e8e2d9;
+    --text-secondary: #8a8fa3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--background);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0; padding: 0 24px;
+    height: 48px;
+  }
+  .nav-logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--primary);
+    margin-right: 32px;
+    letter-spacing: 0.05em;
+  }
+  .nav-tab {
+    padding: 0 16px; height: 48px; display: flex; align-items: center;
+    color: var(--text-secondary); cursor: pointer; border: none; background: none;
+    font-size: 13px; font-family: inherit; border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-tab:hover { color: var(--text-primary); }
+  .nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+  /* SCREENS */
+  .screen { display: none; padding-top: 48px; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* LAYOUT */
+  .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+  .screen-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-secondary); margin-bottom: 24px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COMPONENTS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .card:hover { border-color: #3a3d4e; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .badge-primary { background: rgba(200,168,98,0.15); color: var(--primary); }
+  .badge-secondary { background: rgba(74,155,142,0.15); color: var(--secondary); }
+  .badge-muted { background: rgba(138,143,163,0.1); color: var(--text-secondary); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; font-family: inherit; transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--primary); color: var(--background); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+  .btn-ghost { background: transparent; color: var(--text-secondary); }
+
+  /* SPRITE PLACEHOLDERS */
+  .sprite {
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; image-rendering: pixelated; flex-shrink: 0;
+    font-size: 20px;
+  }
+  .sprite-sm { width: 32px; height: 32px; }
+  .sprite-md { width: 64px; height: 64px; font-size: 36px; }
+  .sprite-lg { width: 128px; height: 128px; font-size: 72px; }
+  .sprite-silhouette {
+    background: var(--border); color: var(--text-secondary);
+    font-family: 'Press Start 2P', monospace; font-size: 14px;
+  }
+  .sprite-bw { background: rgba(200,168,98,0.08); }
+  .sprite-fm { background: rgba(74,155,142,0.08); }
+  .sprite-de { background: rgba(138,100,200,0.08); }
+  .sprite-fs { background: rgba(200,98,98,0.08); }
+
+  /* PIXEL LABEL */
+  .pixel-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px; letter-spacing: 0.05em;
+    color: var(--primary);
+  }
+
+  /* TENURE BAR */
+  .tenure-item { display: flex; flex-direction: column; gap: 6px; }
+  .tenure-header { display: flex; justify-content: space-between; align-items: center; }
+  .tenure-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .tenure-fill { height: 100%; border-radius: 3px; background: var(--primary); opacity: 0.7; }
+
+  /* STREAK */
+  .streak-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 20px;
+    background: rgba(200,168,98,0.12); border: 1px solid rgba(200,168,98,0.25);
+    color: var(--primary); font-weight: 600; font-size: 13px;
+  }
+  .streak-badge.inactive { background: rgba(138,143,163,0.08); border-color: var(--border); color: var(--text-secondary); }
+
+  /* REPUTATION METER */
+  .rep-meter { display: flex; flex-direction: column; gap: 6px; }
+  .rep-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; position: relative; }
+  .rep-fill { height: 100%; border-radius: 4px; background: var(--primary); }
+  .rep-marker { position: absolute; right: 0; top: -2px; width: 2px; height: 12px; background: var(--text-secondary); }
+
+  /* QUEST TIER */
+  .tier-untested { background: rgba(138,143,163,0.1); color: var(--text-secondary); }
+  .tier-rising { background: rgba(74,155,142,0.15); color: var(--secondary); }
+  .tier-main { background: rgba(200,168,98,0.15); color: var(--primary); }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-sidebar { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+
+  /* MISC */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .text-muted { color: var(--text-secondary); }
+  .text-sm { font-size: 12px; }
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .mb-4 { margin-bottom: 16px; }
+  .mb-6 { margin-bottom: 24px; }
+  .font-semibold { font-weight: 600; }
+  .font-bold { font-weight: 700; }
+  .upvote-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-secondary); cursor: pointer;
+    font-family: inherit; font-size: 11px; transition: all 0.15s;
+  }
+  .upvote-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .upvote-btn.voted { border-color: var(--primary); color: var(--primary); background: rgba(200,168,98,0.08); }
+  input, textarea {
+    background: var(--background); border: 1px solid var(--border);
+    color: var(--text-primary); border-radius: 4px; padding: 8px 12px;
+    font-family: inherit; font-size: 14px; width: 100%;
+  }
+  input:focus, textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+  label { font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">BitGuild</div>
+  <button class="nav-tab active" onclick="show('class-select')">Class Select</button>
+  <button class="nav-tab" onclick="show('guild-browse')">Guild Browse</button>
+  <button class="nav-tab" onclick="show('guild-detail')">Guild Detail</button>
+  <button class="nav-tab" onclick="show('quest-board')">Quest Board</button>
+  <button class="nav-tab" onclick="show('profile')">Profile</button>
+  <button class="nav-tab" onclick="show('components')">Components</button>
+</nav>
+
+<!-- ─────────────────── SCREEN 1: CLASS SELECTION ─────────────────── -->
+<div class="screen active" id="class-select">
+  <div style="min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px;">
+
+    <div style="text-align:center; margin-bottom:40px;">
+      <div class="nav-logo" style="font-size:14px; margin-bottom:12px;">BitGuild</div>
+      <div style="font-size:24px; font-weight:700; color:var(--text-primary); margin-bottom:8px;">Who are you?</div>
+      <div class="text-muted">Pick your class. Your identity on BitGuild starts here.</div>
+      <div class="text-muted text-sm" style="margin-top:4px;">Step 1 of 2 — create your account after.</div>
+    </div>
+
+    <div class="grid-2" style="max-width:760px; width:100%; gap:12px;">
+
+      <!-- Backend Warrior -->
+      <div class="card" style="cursor:pointer; border-color:var(--primary); background:rgba(200,168,98,0.05);">
+        <div class="flex items-center gap-4 mb-3">
+          <div class="sprite sprite-lg sprite-bw" style="border:2px solid rgba(200,168,98,0.3);">⚔️</div>
+          <div>
+            <div class="pixel-label mb-2">BACKEND WARRIOR</div>
+            <div style="font-size:13px; color:var(--text-secondary);">APIs, databases, infrastructure. You make things fast and reliable. The engine nobody sees.</div>
+          </div>
+        </div>
+        <div class="flex gap-2" style="flex-wrap:wrap;">
+          <span class="badge badge-muted">Node.js</span>
+          <span class="badge badge-muted">Postgres</span>
+          <span class="badge badge-muted">Redis</span>
+          <span class="badge badge-muted">Go</span>
+        </div>
+      </div>
+
+      <!-- Frontend Mage -->
+      <div class="card" style="cursor:pointer;">
+        <div class="flex items-center gap-4 mb-3">
+          <div class="sprite sprite-lg sprite-fm">✨</div>
+          <div>
+            <div class="pixel-label mb-2" style="color:var(--secondary);">FRONTEND MAGE</div>
+            <div style="font-size:13px; color:var(--text-secondary);">Interfaces, interactions, the experience layer. You make things real for the user.</div>
+          </div>
+        </div>
+        <div class="flex gap-2" style="flex-wrap:wrap;">
+          <span class="badge badge-muted">React</span>
+          <span class="badge badge-muted">TypeScript</span>
+          <span class="badge badge-muted">CSS</span>
+          <span class="badge badge-muted">UX</span>
+        </div>
+      </div>
+
+      <!-- DevOps Engineer -->
+      <div class="card" style="cursor:pointer;">
+        <div class="flex items-center gap-4 mb-3">
+          <div class="sprite sprite-lg sprite-de">🛠️</div>
+          <div>
+            <div class="pixel-label mb-2" style="color:#a080e0;">DEVOPS ENGINEER</div>
+            <div style="font-size:13px; color:var(--text-secondary);">Pipelines, deployments, uptime. You keep the guild shipping without the drama.</div>
+          </div>
+        </div>
+        <div class="flex gap-2" style="flex-wrap:wrap;">
+          <span class="badge badge-muted">Docker</span>
+          <span class="badge badge-muted">Kubernetes</span>
+          <span class="badge badge-muted">CI/CD</span>
+          <span class="badge badge-muted">AWS</span>
+        </div>
+      </div>
+
+      <!-- Wanderer -->
+      <div class="card" style="cursor:pointer;">
+        <div class="flex items-center gap-4 mb-3">
+          <div class="sprite sprite-lg sprite-fs">🗺️</div>
+          <div>
+            <div class="pixel-label mb-2" style="color:#c86a6a;">WANDERER</div>
+            <div style="font-size:13px; color:var(--text-secondary);">You have a product idea and market validation. You need engineers to build it with you.</div>
+          </div>
+        </div>
+        <div class="flex gap-2" style="flex-wrap:wrap;">
+          <span class="badge badge-muted">Product</span>
+          <span class="badge badge-muted">Strategy</span>
+          <span class="badge badge-muted">User Research</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:32px; text-align:center;">
+      <button class="btn btn-primary" style="padding:12px 32px; font-size:14px;">
+        Claim Backend Warrior →
+      </button>
+      <div class="text-muted text-sm" style="margin-top:12px;">You can change your class later, but it carries weight.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── SCREEN 2: GUILD BROWSE ─────────────────── -->
+<div class="screen" id="guild-browse">
+  <div class="container">
+    <div class="flex items-center gap-4 mb-6" style="justify-content:space-between;">
+      <div>
+        <div class="screen-title" style="margin-bottom:4px; border:none;">Guilds</div>
+        <div class="text-muted text-sm">Active guilds building in public. Open slots are waiting.</div>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-outline" style="font-size:12px;">Recruiting only</button>
+        <button class="btn btn-primary">+ Form a Guild</button>
+      </div>
+    </div>
+
+    <div class="grid-3">
+
+      <!-- Guild Card 1 — recruiting -->
+      <div class="card" style="cursor:pointer; border-color:rgba(200,168,98,0.25);">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex gap-1">
+            <div class="sprite sprite-sm sprite-bw">⚔️</div>
+            <div class="sprite sprite-sm sprite-fm">✨</div>
+            <div class="sprite sprite-sm sprite-silhouette" style="font-size:10px;">?</div>
+          </div>
+          <div>
+            <div class="font-semibold">Iron Forge</div>
+            <span class="badge badge-primary" style="font-size:10px;">Recruiting</span>
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+          Dev tooling for CI/CD pipeline debugging. 8-week MVP sprint.
+        </div>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div class="flex gap-2" style="justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:11px; color:var(--text-secondary); margin-bottom:4px;">Open role</div>
+            <span class="badge badge-secondary" style="font-size:10px;">DevOps Engineer</span>
+          </div>
+          <div class="streak-badge" style="font-size:12px;">🔥 24</div>
+        </div>
+      </div>
+
+      <!-- Guild Card 2 — recruiting -->
+      <div class="card" style="cursor:pointer; border-color:rgba(74,155,142,0.2);">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex gap-1">
+            <div class="sprite sprite-sm sprite-bw">⚔️</div>
+            <div class="sprite sprite-sm sprite-silhouette" style="font-size:10px;">?</div>
+            <div class="sprite sprite-sm sprite-silhouette" style="font-size:10px;">?</div>
+          </div>
+          <div>
+            <div class="font-semibold">Null Pointer</div>
+            <span class="badge badge-primary" style="font-size:10px;">Recruiting</span>
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+          Open-source async collaboration tool. Building in TypeScript + Rust.
+        </div>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div class="flex gap-2" style="justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:11px; color:var(--text-secondary); margin-bottom:4px;">2 open roles</div>
+            <div class="flex gap-1">
+              <span class="badge badge-secondary" style="font-size:10px;">Frontend Mage</span>
+              <span class="badge badge-secondary" style="font-size:10px;">DevOps</span>
+            </div>
+          </div>
+          <div class="streak-badge" style="font-size:12px;">🔥 7</div>
+        </div>
+      </div>
+
+      <!-- Guild Card 3 — full -->
+      <div class="card" style="cursor:pointer;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex gap-1">
+            <div class="sprite sprite-sm sprite-bw">⚔️</div>
+            <div class="sprite sprite-sm sprite-fm">✨</div>
+            <div class="sprite sprite-sm sprite-de">🛠️</div>
+          </div>
+          <div>
+            <div class="font-semibold">Stack Overflow Enjoyers</div>
+            <span class="badge badge-muted" style="font-size:10px;">Full</span>
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+          AI-powered code review SaaS. Series A coming Q3.
+        </div>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div class="flex gap-2" style="justify-content:space-between; align-items:center;">
+          <div class="text-muted text-sm">No open roles</div>
+          <div class="streak-badge" style="font-size:12px;">🔥 91</div>
+        </div>
+      </div>
+
+      <!-- Guild Card 4 -->
+      <div class="card" style="cursor:pointer; border-color:rgba(200,168,98,0.25);">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex gap-1">
+            <div class="sprite sprite-sm sprite-fs">🗺️</div>
+            <div class="sprite sprite-sm sprite-bw">⚔️</div>
+            <div class="sprite sprite-sm sprite-silhouette" style="font-size:10px;">?</div>
+          </div>
+          <div>
+            <div class="font-semibold">The Wandering Nodes</div>
+            <span class="badge badge-primary" style="font-size:10px;">Recruiting</span>
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+          Fintech compliance SaaS targeting EU market. Validated with 3 paying pilots.
+        </div>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div class="flex gap-2" style="justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:11px; color:var(--text-secondary); margin-bottom:4px;">Open role</div>
+            <span class="badge badge-secondary" style="font-size:10px;">Frontend Mage</span>
+          </div>
+          <div class="streak-badge" style="font-size:12px;">🔥 14</div>
+        </div>
+      </div>
+
+      <!-- Guild Card 5 -->
+      <div class="card" style="cursor:pointer;">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex gap-1">
+            <div class="sprite sprite-sm sprite-de">🛠️</div>
+            <div class="sprite sprite-sm sprite-fm">✨</div>
+            <div class="sprite sprite-sm sprite-bw">⚔️</div>
+          </div>
+          <div>
+            <div class="font-semibold">Deploy on Friday</div>
+            <span class="badge badge-muted" style="font-size:10px;">Full</span>
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+          Developer experience platform. Shipped v1 in 6 weeks. V2 underway.
+        </div>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div class="flex gap-2" style="justify-content:space-between; align-items:center;">
+          <div class="text-muted text-sm">No open roles</div>
+          <div class="streak-badge" style="font-size:12px; background:rgba(200,168,98,0.2); border-color:rgba(200,168,98,0.4);">🔥 182</div>
+        </div>
+      </div>
+
+      <!-- Guild Card 6 — recruiting -->
+      <div class="card" style="cursor:pointer; border-color:rgba(200,168,98,0.25);">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex gap-1">
+            <div class="sprite sprite-sm sprite-bw">⚔️</div>
+            <div class="sprite sprite-sm sprite-silhouette" style="font-size:10px;">?</div>
+            <div class="sprite sprite-sm sprite-silhouette" style="font-size:10px;">?</div>
+          </div>
+          <div>
+            <div class="font-semibold">Recursive Dreams</div>
+            <span class="badge badge-primary" style="font-size:10px;">Recruiting</span>
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">
+          ML-powered developer documentation generator. 2 Untested quests shipped.
+        </div>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div class="flex gap-2" style="justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:11px; color:var(--text-secondary); margin-bottom:4px;">2 open roles</div>
+            <div class="flex gap-1">
+              <span class="badge badge-secondary" style="font-size:10px;">Frontend Mage</span>
+              <span class="badge badge-secondary" style="font-size:10px;">Backend Warrior</span>
+            </div>
+          </div>
+          <div class="streak-badge" style="font-size:12px;">🔥 3</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── SCREEN 3: GUILD DETAIL ─────────────────── -->
+<div class="screen" id="guild-detail">
+  <div class="container">
+
+    <!-- Guild header -->
+    <div class="card mb-4" style="padding:24px;">
+      <div class="flex gap-4 mb-4" style="justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div style="font-size:24px; font-weight:700; margin-bottom:6px;">Iron Forge</div>
+          <div class="text-muted" style="font-size:14px; max-width:520px;">
+            Dev tooling for CI/CD pipeline debugging. Engineers spend 40% of deploy time diagnosing broken builds. We're fixing that.
+          </div>
+        </div>
+        <div class="flex gap-3 items-center">
+          <div class="streak-badge">🔥 24 streak</div>
+          <button class="btn btn-primary">Apply to join</button>
+        </div>
+      </div>
+
+      <!-- Roster -->
+      <div>
+        <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:12px;">Roster</div>
+        <div class="flex gap-4">
+          <div style="text-align:center;">
+            <div class="sprite sprite-md sprite-bw" style="margin:0 auto 6px; border:2px solid rgba(200,168,98,0.3);">⚔️</div>
+            <div style="font-size:12px; font-weight:600;">alexchen</div>
+            <div class="pixel-label" style="font-size:7px; margin-top:2px;">B. WARRIOR</div>
+            <span class="badge badge-muted" style="font-size:10px; margin-top:4px;">Lead</span>
+          </div>
+          <div style="text-align:center;">
+            <div class="sprite sprite-md sprite-fm" style="margin:0 auto 6px;">✨</div>
+            <div style="font-size:12px; font-weight:600;">sara_m</div>
+            <div class="pixel-label" style="font-size:7px; margin-top:2px; color:var(--secondary);">F. MAGE</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="sprite sprite-md sprite-silhouette" style="margin:0 auto 6px; border:1px dashed var(--border);">?</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Open slot</div>
+            <span class="badge badge-secondary" style="font-size:10px; margin-top:4px;">DevOps</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-sidebar">
+      <div>
+        <!-- Active quest -->
+        <div class="card mb-4">
+          <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:12px;">Active Quest</div>
+          <span class="badge tier-main" style="margin-bottom:8px; display:inline-flex;">Main Board</span>
+          <div class="font-semibold mb-2">Build the build-log parser MVP</div>
+          <div class="text-muted text-sm">Week 3 of 8 — parsing GitHub Actions logs, surface top failure patterns. PR #47 in review.</div>
+        </div>
+
+        <!-- Reputation gate -->
+        <div class="card">
+          <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:12px;">Guild Reputation Gate</div>
+          <div class="rep-meter mb-3">
+            <div class="flex" style="justify-content:space-between; margin-bottom:4px;">
+              <span class="text-muted text-sm">Applicant threshold</span>
+              <span style="font-size:12px; font-weight:600; color:var(--primary);">380 / 500</span>
+            </div>
+            <div class="rep-track">
+              <div class="rep-fill" style="width:76%;"></div>
+            </div>
+          </div>
+          <div class="text-muted text-sm">Iron Forge requires 500 reputation to apply. Earn more by posting quests and upvoting useful problems.</div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Tenure histories -->
+        <div class="screen-title">Member Tenure Histories</div>
+
+        <div class="card mb-3">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="sprite sprite-sm sprite-bw">⚔️</div>
+            <div>
+              <div class="font-semibold">alexchen</div>
+              <div class="pixel-label" style="font-size:7px;">BACKEND WARRIOR</div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="tenure-item">
+              <div class="tenure-header">
+                <span class="text-sm font-semibold">Backend Lead</span>
+                <span class="text-muted text-sm">18 months</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:75%;"></div></div>
+              <div class="text-muted" style="font-size:11px;">Shipped payments API, auth refactor, 2 major versioned APIs</div>
+            </div>
+            <div class="tenure-item">
+              <div class="tenure-header">
+                <span class="text-sm font-semibold">Solo founder</span>
+                <span class="text-muted text-sm">8 months</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:33%;"></div></div>
+              <div class="text-muted" style="font-size:11px;">CLI tool for log parsing, 400 GitHub stars</div>
+            </div>
+            <div class="tenure-item">
+              <div class="tenure-header">
+                <span class="text-sm font-semibold">Contractor, Backend</span>
+                <span class="text-muted text-sm">5 months</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:21%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="sprite sprite-sm sprite-fm">✨</div>
+            <div>
+              <div class="font-semibold">sara_m</div>
+              <div class="pixel-label" style="font-size:7px; color:var(--secondary);">FRONTEND MAGE</div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="tenure-item">
+              <div class="tenure-header">
+                <span class="text-sm font-semibold">Frontend Lead</span>
+                <span class="text-muted text-sm">14 months</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:58%;"></div></div>
+              <div class="text-muted" style="font-size:11px;">Design system from scratch, shipped React Native app</div>
+            </div>
+            <div class="tenure-item">
+              <div class="tenure-header">
+                <span class="text-sm font-semibold">Co-founder, Frontend</span>
+                <span class="text-muted text-sm">11 months</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:46%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application drawer (inline) -->
+        <div class="card" style="margin-top:16px; border-color:var(--primary);">
+          <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--primary); margin-bottom:12px;">Apply — DevOps Engineer</div>
+          <div class="mb-3">
+            <label>Tell Iron Forge what you bring (3 sentences max)</label>
+            <textarea rows="3" placeholder="I've run Kubernetes clusters at scale for 3 years. I specialize in build-pipeline optimization — I've cut CI times by 60% at two startups. I want to work on a product where infra is the product, not an afterthought."></textarea>
+          </div>
+          <div class="text-muted text-sm mb-3">alexchen will review your tenure history above before responding.</div>
+          <button class="btn btn-primary" style="width:100%; justify-content:center;">Submit Application</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── SCREEN 4: QUEST BOARD ─────────────────── -->
+<div class="screen" id="quest-board">
+  <div class="container">
+    <div class="flex items-center mb-6" style="justify-content:space-between;">
+      <div>
+        <div class="screen-title" style="margin-bottom:4px; border:none;">Quest Board</div>
+        <div class="text-muted text-sm">Problems worth solving, sorted by the community.</div>
+      </div>
+      <button class="btn btn-primary">+ Post a Quest</button>
+    </div>
+
+    <!-- Tier tabs -->
+    <div class="flex gap-0 mb-6" style="border-bottom:1px solid var(--border);">
+      <button class="nav-tab active" style="height:40px; font-size:12px;">
+        <span class="badge tier-main" style="margin-right:6px; font-size:10px;">Main Board</span>
+        High signal
+      </button>
+      <button class="nav-tab" style="height:40px; font-size:12px;">
+        <span class="badge tier-rising" style="margin-right:6px; font-size:10px;">Rising Lane</span>
+        Gaining traction
+      </button>
+      <button class="nav-tab" style="height:40px; font-size:12px;">
+        <span class="badge tier-untested" style="margin-right:6px; font-size:10px;">Untested</span>
+        Fresh problems
+      </button>
+    </div>
+
+    <!-- Quest list -->
+    <div style="display:flex; flex-direction:column; gap:8px;">
+
+      <div class="card flex gap-4 items-center" style="padding:12px 16px;">
+        <button class="upvote-btn voted">
+          <span>▲</span>
+          <span>84</span>
+        </button>
+        <div style="flex:1;">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge tier-main" style="font-size:10px;">Main Board</span>
+            <span class="badge badge-muted" style="font-size:10px;">DX / Tooling</span>
+          </div>
+          <div class="font-semibold mb-1">There's no good way to debug intermittent CI failures without downloading 50MB of logs</div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 text-muted text-sm">
+              <div class="sprite sprite-sm sprite-bw" style="width:16px; height:16px; font-size:10px;">⚔️</div>
+              alexchen
+            </div>
+            <span class="text-muted text-sm">3 days ago</span>
+            <span class="text-muted text-sm">12 comments</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card flex gap-4 items-center" style="padding:12px 16px;">
+        <button class="upvote-btn">
+          <span>▲</span>
+          <span>61</span>
+        </button>
+        <div style="flex:1;">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge tier-main" style="font-size:10px;">Main Board</span>
+            <span class="badge badge-muted" style="font-size:10px;">Auth / Security</span>
+          </div>
+          <div class="font-semibold mb-1">OAuth provider switching mid-product is a data migration nightmare with no established pattern</div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 text-muted text-sm">
+              <div class="sprite sprite-sm sprite-fm" style="width:16px; height:16px; font-size:10px;">✨</div>
+              sara_m
+            </div>
+            <span class="text-muted text-sm">1 week ago</span>
+            <span class="text-muted text-sm">7 comments</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card flex gap-4 items-center" style="padding:12px 16px;">
+        <button class="upvote-btn">
+          <span>▲</span>
+          <span>47</span>
+        </button>
+        <div style="flex:1;">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge tier-main" style="font-size:10px;">Main Board</span>
+            <span class="badge badge-muted" style="font-size:10px;">Billing</span>
+          </div>
+          <div class="font-semibold mb-1">Stripe webhook ordering is unreliable in local dev — every team reinvents the same workaround</div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 text-muted text-sm">
+              <div class="sprite sprite-sm sprite-de" style="width:16px; height:16px; font-size:10px;">🛠️</div>
+              priya_w
+            </div>
+            <span class="text-muted text-sm">2 weeks ago</span>
+            <span class="text-muted text-sm">21 comments</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card flex gap-4 items-center" style="padding:12px 16px; opacity:0.7;">
+        <button class="upvote-btn">
+          <span>▲</span>
+          <span>39</span>
+        </button>
+        <div style="flex:1;">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge tier-rising" style="font-size:10px;">Rising Lane</span>
+            <span class="badge badge-muted" style="font-size:10px;">Observability</span>
+            <span class="text-muted text-sm" style="font-size:10px; font-style:italic;">needs 11 more upvotes for Main Board</span>
+          </div>
+          <div class="font-semibold mb-1">No standard for structured logging in Next.js app router — every team picks differently</div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 text-muted text-sm">
+              <div class="sprite sprite-sm sprite-bw" style="width:16px; height:16px; font-size:10px;">⚔️</div>
+              k_tanaka
+            </div>
+            <span class="text-muted text-sm">4 days ago</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── SCREEN 5: PROFILE ─────────────────── -->
+<div class="screen" id="profile">
+  <div class="container">
+    <div class="grid-sidebar" style="gap:32px;">
+      <!-- Left: Identity -->
+      <div>
+        <div class="card" style="text-align:center; padding:24px 16px; margin-bottom:16px;">
+          <div class="sprite sprite-lg sprite-bw" style="margin:0 auto 12px; border:2px solid rgba(200,168,98,0.3);">⚔️</div>
+          <div class="pixel-label" style="margin-bottom:6px;">BACKEND WARRIOR</div>
+          <div style="font-size:18px; font-weight:700; margin-bottom:4px;">alexchen</div>
+          <div class="text-muted text-sm mb-4">Joined 8 months ago</div>
+          <div class="streak-badge" style="margin:0 auto; width:fit-content; font-size:14px; padding:6px 16px;">🔥 24 streak</div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:12px;">Skill Tree</div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div style="padding:6px 10px; background:rgba(200,168,98,0.08); border:1px solid rgba(200,168,98,0.2); border-radius:4px; font-size:13px;">
+              <span style="color:var(--primary); margin-right:6px;">▸</span> API Design
+            </div>
+            <div style="padding:6px 10px; background:rgba(200,168,98,0.08); border:1px solid rgba(200,168,98,0.2); border-radius:4px; font-size:13px;">
+              <span style="color:var(--primary); margin-right:6px;">▸</span> PostgreSQL
+            </div>
+            <div style="padding:6px 10px; background:rgba(200,168,98,0.08); border:1px solid rgba(200,168,98,0.2); border-radius:4px; font-size:13px;">
+              <span style="color:var(--primary); margin-right:6px;">▸</span> Redis
+            </div>
+            <div style="padding:6px 10px; background:rgba(200,168,98,0.08); border:1px solid rgba(200,168,98,0.2); border-radius:4px; font-size:13px;">
+              <span style="color:var(--primary); margin-right:6px;">▸</span> TypeScript
+            </div>
+            <div style="padding:6px 10px; background:rgba(200,168,98,0.08); border:1px solid rgba(200,168,98,0.2); border-radius:4px; font-size:13px;">
+              <span style="color:var(--primary); margin-right:6px;">▸</span> System Design
+            </div>
+            <div class="text-muted text-sm" style="margin-top:4px; text-align:center;">5 / 5 slots declared</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:12px;">Current Guild</div>
+          <div class="flex items-center gap-3">
+            <div class="flex gap-1">
+              <div class="sprite sprite-sm sprite-bw">⚔️</div>
+              <div class="sprite sprite-sm sprite-fm">✨</div>
+            </div>
+            <div>
+              <div class="font-semibold">Iron Forge</div>
+              <span class="badge badge-muted" style="font-size:10px;">Guild Lead</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Tenure history -->
+      <div>
+        <div class="screen-title">Tenure History</div>
+        <div class="text-muted text-sm mb-4">Duration and role — the community reads this data and draws their own conclusions.</div>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+
+          <div class="card">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="badge badge-primary" style="font-size:10px;">Current</span>
+              <span class="font-semibold">Iron Forge</span>
+              <span class="text-muted text-sm">— Backend Lead</span>
+            </div>
+            <div class="tenure-item mb-2">
+              <div class="tenure-header">
+                <span class="text-sm">Active — 8 months</span>
+                <div class="streak-badge" style="font-size:11px; padding:2px 8px;">🔥 24</div>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:33%;"></div></div>
+            </div>
+            <div class="text-muted text-sm">Shipped CI log parser, REST API v2, payments integration</div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="font-semibold">Stealth SaaS</span>
+              <span class="text-muted text-sm">— Backend Lead</span>
+            </div>
+            <div class="tenure-item mb-2">
+              <div class="tenure-header">
+                <span class="text-sm">18 months</span>
+                <span class="text-muted text-sm">Jun 2023 – Dec 2024</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:75%;"></div></div>
+            </div>
+            <div class="text-muted text-sm">Auth architecture, payments API v1, onboarded 3 engineers</div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="font-semibold">Solo Project: logtail-cli</span>
+              <span class="text-muted text-sm">— Founder</span>
+            </div>
+            <div class="tenure-item mb-2">
+              <div class="tenure-header">
+                <span class="text-sm">8 months</span>
+                <span class="text-muted text-sm">Oct 2022 – Jun 2023</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:33%;"></div></div>
+            </div>
+            <div class="text-muted text-sm">Open source CLI, 400 GitHub stars, archived due to scope shift</div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="font-semibold">Agency Contract</span>
+              <span class="text-muted text-sm">— Backend Contractor</span>
+            </div>
+            <div class="tenure-item">
+              <div class="tenure-header">
+                <span class="text-sm">5 months</span>
+                <span class="text-muted text-sm">May 2022 – Oct 2022</span>
+              </div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:21%;"></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── SCREEN 6: COMPONENTS ─────────────────── -->
+<div class="screen" id="components">
+  <div class="container">
+    <div class="screen-title">Component Reference</div>
+
+    <div class="grid-2" style="gap:24px;">
+
+      <div>
+        <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Sprites</div>
+        <div class="card flex gap-4 items-center mb-4">
+          <div class="sprite sprite-sm sprite-bw">⚔️</div>
+          <div class="sprite sprite-md sprite-bw">⚔️</div>
+          <div class="sprite sprite-lg sprite-bw">⚔️</div>
+          <div class="sprite sprite-md sprite-silhouette">?</div>
+        </div>
+
+        <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Streak Badge</div>
+        <div class="card flex gap-3 items-center mb-4">
+          <div class="streak-badge">🔥 24</div>
+          <div class="streak-badge" style="background:rgba(200,168,98,0.2); border-color:rgba(200,168,98,0.4);">🔥 182</div>
+          <div class="streak-badge inactive">🔥 Resume streak</div>
+        </div>
+
+        <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Quest Tier Badges</div>
+        <div class="card flex gap-3 items-center mb-4">
+          <span class="badge tier-untested">Untested</span>
+          <span class="badge tier-rising">Rising Lane</span>
+          <span class="badge tier-main">Main Board</span>
+        </div>
+
+        <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Buttons</div>
+        <div class="card flex gap-3 items-center flex-wrap">
+          <button class="btn btn-primary">Primary Action</button>
+          <button class="btn btn-outline">Secondary</button>
+          <button class="btn btn-ghost">Ghost</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Tenure Bars</div>
+        <div class="card mb-4">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="tenure-item">
+              <div class="tenure-header"><span class="text-sm">Backend Lead</span><span class="text-muted text-sm">18 months</span></div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:75%;"></div></div>
+            </div>
+            <div class="tenure-item">
+              <div class="tenure-header"><span class="text-sm">Solo Founder</span><span class="text-muted text-sm">8 months</span></div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:33%;"></div></div>
+            </div>
+            <div class="tenure-item">
+              <div class="tenure-header"><span class="text-sm">Contractor</span><span class="text-muted text-sm">3 months</span></div>
+              <div class="tenure-track"><div class="tenure-fill" style="width:12%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Reputation Meter</div>
+        <div class="card mb-4">
+          <div class="rep-meter">
+            <div class="flex" style="justify-content:space-between; margin-bottom:6px;">
+              <span class="text-muted text-sm">Reputation</span>
+              <span style="font-size:12px; font-weight:600; color:var(--primary);">380 / 500</span>
+            </div>
+            <div class="rep-track">
+              <div class="rep-fill" style="width:76%;"></div>
+            </div>
+            <div class="text-muted" style="font-size:11px; margin-top:4px;">120 more to unlock guild applications</div>
+          </div>
+        </div>
+
+        <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Upvote Button</div>
+        <div class="card flex gap-4 items-center">
+          <button class="upvote-btn">
+            <span>▲</span>
+            <span>47</span>
+          </button>
+          <button class="upvote-btn voted">
+            <span>▲</span>
+            <span>48</span>
+          </button>
+          <span class="text-muted text-sm">Default / Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette -->
+    <div style="margin-top:32px;">
+      <div class="text-muted text-sm mb-3" style="text-transform:uppercase; letter-spacing:0.08em; font-size:11px; font-weight:600;">Color System</div>
+      <div class="flex gap-2" style="flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#0d0f14; border:1px solid var(--border); border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">background</div>
+          <div style="font-size:10px;">#0d0f14</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#151820; border:1px solid var(--border); border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">surface</div>
+          <div style="font-size:10px;">#151820</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#2a2d3a; border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">border</div>
+          <div style="font-size:10px;">#2a2d3a</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#c8a862; border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">primary</div>
+          <div style="font-size:10px;">#c8a862</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#4a9b8e; border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">secondary</div>
+          <div style="font-size:10px;">#4a9b8e</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#8b3a3a; border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">danger</div>
+          <div style="font-size:10px;">#8b3a3a</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#4a7c59; border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">success</div>
+          <div style="font-size:10px;">#4a7c59</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#e8e2d9; border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">text-primary</div>
+          <div style="font-size:10px;">#e8e2d9</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:64px; height:64px; background:#8a8fa3; border-radius:4px;"></div>
+          <div class="text-muted" style="font-size:10px; margin-top:4px;">text-secondary</div>
+          <div style="font-size:10px;">#8a8fa3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>

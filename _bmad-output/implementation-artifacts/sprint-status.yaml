@@ -1,0 +1,120 @@
+# generated: 2026-04-30
+# last_updated: 2026-05-01
+# project: BitGuild
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-04-30
+last_updated: 2026-05-01
+project: BitGuild
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # ─────────────────────────────────────────────────────────────
+  # Epic 1: Foundation, Auth & Developer Identity
+  # ─────────────────────────────────────────────────────────────
+  epic-1: in-progress
+  1-1-t3-stack-scaffold-and-dark-forge-design-system: done
+  1-2-class-selector-screen: done
+  1-3-github-oauth-authentication-and-account-creation: backlog
+  1-4-email-password-authentication-fallback: backlog
+  1-5-skill-tree-declaration: backlog
+  1-6-trpc-rbac-and-class-constraint-middleware: backlog
+  1-7-user-profile-page: backlog
+  1-8-skill-tree-update: backlog
+  epic-1-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────
+  # Epic 2: Guild Formation & Team Mechanics
+  # ─────────────────────────────────────────────────────────────
+  epic-2: backlog
+  2-1-guild-formation-and-equity-agreement-ceremony: backlog
+  2-2-lfg-slot-declaration-and-roster-display-with-silhouettes: backlog
+  2-3-guild-application-submission: backlog
+  2-4-application-review-approval-and-real-time-roster-update: backlog
+  2-5-member-departure-and-slot-re-opening: backlog
+  2-6-guild-browse-and-public-profile: backlog
+  2-7-guild-milestone-posting: backlog
+  2-8-tenure-history-display-on-profiles: backlog
+  epic-2-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────
+  # Epic 3: Quest Board & Community Trust
+  # ─────────────────────────────────────────────────────────────
+  epic-3: backlog
+  3-1-quest-board-browse-and-guest-access: backlog
+  3-2-quest-posting-main-board-and-rising-lane: backlog
+  3-3-wanderer-structured-quest-template: backlog
+  3-4-quest-upvoting-and-tier-progression: backlog
+  3-5-quest-auto-archive-7-day-bullmq-job: backlog
+  3-6-community-flagging-and-auto-quarantine: backlog
+  3-7-reputation-system-earning-display-and-gate: backlog
+  3-8-rising-lane-feed: backlog
+  epic-3-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────
+  # Epic 4: Daily Engagement & Accountability Loop
+  # ─────────────────────────────────────────────────────────────
+  epic-4: backlog
+  4-1-daily-reset-job-per-timezone-idempotent: backlog
+  4-2-streak-tracking-redis-atomic-race-condition-safe: backlog
+  4-3-streakbadge-and-dashboard-display: backlog
+  4-4-day-3-contribution-prompt: backlog
+  4-5-toast-system-and-empty-states: backlog
+  epic-4-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────
+  # Epic 5: Heroic Mode & Subscriptions
+  # ─────────────────────────────────────────────────────────────
+  epic-5: backlog
+  5-1-stripe-integration-and-subscription-data-model: backlog
+  5-2-heroic-mode-upgrade-flow: backlog
+  5-3-heroic-mode-priority-lfg-and-advanced-matching-filters: backlog
+  5-4-heroic-mode-guild-analytics-dashboard: backlog
+  5-5-heroic-mode-multi-guild-leadership-and-billing-management: backlog
+  epic-5-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────
+  # Epic 6: Safety, Administration & Platform Integrity
+  # ─────────────────────────────────────────────────────────────
+  epic-6: backlog
+  6-1-admin-flag-queue-and-quest-moderation: backlog
+  6-2-user-suspensions-and-appeal-flow: backlog
+  6-3-reputation-audit-and-admin-config: backlog
+  6-4-two-factor-authentication-totp: backlog
+  6-5-gdpr-ccpa-data-export: backlog
+  6-6-account-deletion-with-tenure-anonymization: backlog
+  6-7-content-policy-owasp-mitigations-and-pii-protection: backlog
+  epic-6-retrospective: optional
