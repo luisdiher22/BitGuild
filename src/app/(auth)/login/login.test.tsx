@@ -1,15 +1,17 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi, describe, it, expect, beforeEach } from "vitest"
+import { signIn } from "next-auth/react"
+import { setPendingClass } from "~/app/(auth)/login/actions"
 import LoginPage from "./page"
 import { UserClass } from "~/types/user"
 
 vi.mock("next-auth/react", () => ({
-  signIn: vi.fn(),
+  signIn: vi.fn().mockResolvedValue(undefined),
 }))
 
 vi.mock("~/app/(auth)/login/actions", () => ({
-  setPendingClass: vi.fn(),
+  setPendingClass: vi.fn().mockResolvedValue(undefined),
 }))
 
 vi.mock("next/link", () => ({
@@ -19,9 +21,6 @@ vi.mock("next/link", () => ({
     </a>
   ),
 }))
-
-const { signIn } = await import("next-auth/react")
-const { setPendingClass } = await import("~/app/(auth)/login/actions")
 
 beforeEach(() => {
   sessionStorage.clear()

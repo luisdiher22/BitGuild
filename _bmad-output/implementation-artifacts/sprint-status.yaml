@@ -1,5 +1,5 @@
 # generated: 2026-04-30
-# last_updated: 2026-05-01
+# last_updated: 2026-05-02
 # project: BitGuild
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-30
-last_updated: 2026-05-01
+last_updated: 2026-05-02
 project: BitGuild
 project_key: NOKEY
 tracking_system: file-system
@@ -48,7 +48,7 @@ development_status:
   epic-1: in-progress
   1-1-t3-stack-scaffold-and-dark-forge-design-system: done
   1-2-class-selector-screen: done
-  1-3-github-oauth-authentication-and-account-creation: review
+  1-3-github-oauth-authentication-and-account-creation: done
   1-4-email-password-authentication-fallback: backlog
   1-5-skill-tree-declaration: backlog
   1-6-trpc-rbac-and-class-constraint-middleware: backlog

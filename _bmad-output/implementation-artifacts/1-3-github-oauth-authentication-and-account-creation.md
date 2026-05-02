@@ -1,6 +1,7 @@
 # Story 1.3: GitHub OAuth Authentication & Account Creation
 
 Status: done
+Review Status: done
 
 ## Story
 
@@ -95,6 +96,21 @@ so that my identity choice is preserved through the sign-up process.
   - [x] `tsc --noEmit` clean
   - [x] `eslint . --ext .ts,.tsx --max-warnings 0` clean (also fixed pre-existing `src as string` lint issue in setup.tsx)
   - [x] All tests pass
+
+### Review Findings (Human) — 2026-05-01
+
+- [x] [Review][Defer] Returning-user detection: 30-second `createdAt` heuristic is fragile — deferred, acceptable V1 risk; address with a `justCreated` flag or wider window in an auth hardening story [src/server/auth.ts:78-79]
+- [x] [Review][Defer] Classless user created when `pendingClass` cookie expires before OAuth — deferred, document gap and address in a dedicated auth hardening story [src/server/auth.ts:75]
+- [x] [Review][Patch] `sessionStorage.removeItem("pendingClass")` called in `useEffect` on mount — before the user clicks OAuth — so if OAuth fails or is cancelled the class is gone from sessionStorage on return, breaking AC3's "previously selected class still shown" guarantee. Fix: remove from sessionStorage only after confirmed successful account creation (e.g., on the skill-tree page), not on login mount. [src/app/(auth)/login/page.tsx:19]
+- [x] [Review][Patch] `pendingClass` cookie not cleared on `createUser` error paths — `cookieStore.set(maxAge:0)` executes after `db.user.create` and after the email null-check, so an exception (DB error or null email) leaves a stale cookie. Fixed: `.finally()` on `db.user.create` ensures cookie is always cleared. [src/server/auth.ts:31-36]
+- [x] [Review][Dismiss] `signIn` callback does not guard `dbUser === null` — `!dbUser?.class` already returns `"/onboarding"` when `dbUser` is null; `dbUser.createdAt` is only reachable when the class is truthy. False positive, no change needed. [src/server/auth.ts:67-71]
+- [x] [Review][Patch] `signIn()` result not checked for errors — `onClick` called `void signIn(...)` discarding the returned promise. Fixed: async onClick with `signInError` state surfaces pre-redirect failures. [src/app/(auth)/login/page.tsx:50-53]
+- [x] [Review][Patch] Top-level `await import()` at module scope in test file — replaced with regular imports (hoisted by `vi.mock`); mocks updated to `.mockResolvedValue(undefined)` for correct async behavior. [src/app/(auth)/login/login.test.tsx:24-25]
+- [x] [Review][Defer] `getToken({ req, raw: true })` discards decoded payload — works correctly now (raw cookie presence check), but future code adding claim reads will need to remove `raw: true`. [src/middleware.ts:6] — deferred, no claims read currently
+- [x] [Review][Defer] `TS_TO_PRISMA_CLASS`/`PRISMA_TO_TS_CLASS` have three sync points (Prisma enum, TS enum, map constants) with no compile-time enforcement — deferred, pre-existing design choice, no active breakage
+- [x] [Review][Defer] No DB transaction wrapping `db.user.create` + cookie clear — full atomicity not achievable without Prisma transactions across NextAuth adapter boundary — deferred, platform limitation
+- [x] [Review][Defer] `setPendingClass` server action has no rate limiting — deferred, platform-level concern outside this story's scope
+- [x] [Review][Defer] `stripeCustomerId` added to schema without surrounding billing infrastructure — deferred, intentional forward-declaration for Epic 5
 
 ### Review Findings (AI) — 2026-05-01
 

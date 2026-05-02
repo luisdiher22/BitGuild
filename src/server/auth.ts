@@ -31,9 +31,7 @@ function createBitGuildAdapter() {
           image: data.image,
           ...(prismaClass !== undefined ? { class: prismaClass } : {}),
         },
-      })
-
-      cookieStore.set("pendingClass", "", { maxAge: 0, httpOnly: true, secure: env.NODE_ENV === "production", sameSite: "lax", path: "/" })
+      }).finally(() => cookieStore.set("pendingClass", "", { maxAge: 0, httpOnly: true, secure: env.NODE_ENV === "production", sameSite: "lax", path: "/" }))
 
       if (!created.email) throw new Error("createUser: email is required")
 

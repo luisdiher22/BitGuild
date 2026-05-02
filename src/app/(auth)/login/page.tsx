@@ -9,6 +9,7 @@ import { Button } from "~/components/ui/button"
 
 export default function LoginPage() {
   const [hasPendingClass, setHasPendingClass] = useState<boolean | null>(null)
+  const [signInError, setSignInError] = useState<string | null>(null)
 
   useEffect(() => {
     const run = async () => {
@@ -16,7 +17,8 @@ export default function LoginPage() {
         const raw = sessionStorage.getItem("pendingClass")
         if (raw && (Object.values(UserClass) as string[]).includes(raw)) {
           await setPendingClass(raw)
-          sessionStorage.removeItem("pendingClass")
+          // sessionStorage key intentionally preserved so the class is
+          // still available if OAuth fails or is cancelled (AC3)
           setHasPendingClass(true)
         } else {
           setHasPendingClass(false)
@@ -47,10 +49,20 @@ export default function LoginPage() {
         </p>
       )}
 
+      {signInError && (
+        <p className="mb-4 text-center text-sm text-red-400">{signInError}</p>
+      )}
+
       <Button
         className="w-full"
         disabled={hasPendingClass !== true}
-        onClick={() => void signIn("github", { callbackUrl: "/onboarding/skill-tree" })}
+        onClick={async () => {
+          setSignInError(null)
+          const result = await signIn("github", { callbackUrl: "/onboarding/skill-tree" })
+          if (result?.error) {
+            setSignInError("Sign-in failed. Please try again.")
+          }
+        }}
       >
         Sign in with GitHub
       </Button>
